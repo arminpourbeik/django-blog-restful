@@ -33,7 +33,7 @@ class Post(models.Model):
     title = models.CharField(max_length=250)
     excerpt = models.TextField(null=True)
     category = models.ForeignKey(
-        to=Category, on_delete=models.PROTECT(), related_name="posts"
+        to=Category, on_delete=models.PROTECT, related_name="posts"
     )
     content = models.TextField()
     slug = models.SlugField(max_length=255, unique_for_date="created_at")
@@ -47,7 +47,7 @@ class Post(models.Model):
     published = PostObjects()  # Custom manager
 
     class Meta:
-        ordering = ("-published",)
+        ordering = ("-created_at",)
 
     def __str__(self) -> str:
         return self.title

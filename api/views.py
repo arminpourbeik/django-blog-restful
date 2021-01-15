@@ -1,4 +1,6 @@
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
 from blog.models import Category, Post, Comment
 from api.serializers import PostSerializer, CategorySerializer, CommentSerializer
@@ -7,6 +9,9 @@ from api.serializers import PostSerializer, CategorySerializer, CommentSerialize
 class PostListView(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     queryset = Post.published.all()
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -26,9 +31,31 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentListView(generics.ListAPIView):
     serializer_class = CommentSerializer
-    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        return Comment.objects.filter(active=True)
 
 
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+
+
+class CreatePostCommentView(generics.CreateAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs.get("pk")
+        serializer.save(author=self.request.user, post_id=post_id)
+
+
+class ApiRoot(generics.GenericAPIView):
+    def get(self, request, *args, **kwargs):
+        return Response(
+            {
+                "posts": reverse("post-list", request=request),
+                "categories": reverse("category-list", request=request),
+                "comments": reverse("comment-list", request=request),
+            }
+        )

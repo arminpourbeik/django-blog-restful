@@ -9,6 +9,7 @@ class Category(models.Model):
     """
 
     name = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name_plural = "categories"

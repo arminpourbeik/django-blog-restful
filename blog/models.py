@@ -51,3 +51,23 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+class Comment(models.Model):
+    """
+    Database model for comments
+    """
+
+    body = models.TextField(max_length=500)
+    author = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments"
+    )
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE, related_name="comments")
+    created_at = models.DateTimeField(default=timezone.now)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return "{} - by {}".format(self.body[:10], self.author.username)

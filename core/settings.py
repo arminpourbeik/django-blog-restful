@@ -115,3 +115,9 @@ STATIC_URL = "/static/"
 
 # Custom user model
 AUTH_USER_MODEL = "authentication.User"
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "api.custompagination.LimitOffsetPaginationWithUpperBound",
+    "PAGE_SIZE": 5,
+}

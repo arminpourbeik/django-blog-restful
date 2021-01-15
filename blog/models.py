@@ -46,6 +46,10 @@ class Post(models.Model):
     objects = models.Manager()  # Default manager
     published = PostObjects()  # Custom manager
 
+    @property
+    def num_of_comments(self):
+        return self.comments.filter(active=True).count()
+
     class Meta:
         ordering = ("-created_at",)
 

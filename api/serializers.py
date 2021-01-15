@@ -21,10 +21,12 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
             "status",
             "author",
             "category",
+            "num_of_comments",
         )
         extra_kwargs = {
             "created_at": {"read_only": True},
             "status": {"read_only": True},
+            "num_of_comments": {"read_only": True},
         }
 
 

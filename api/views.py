@@ -51,6 +51,10 @@ class CreatePostCommentView(generics.CreateAPIView):
 
 
 class ApiRoot(generics.GenericAPIView):
+    """
+    API root for django blog API
+    """
+
     def get(self, request, *args, **kwargs):
         return Response(
             {

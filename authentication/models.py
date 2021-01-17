@@ -4,6 +4,8 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.utils import timezone
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
@@ -31,17 +33,13 @@ class User(AbstractBaseUser, PermissionsMixin):
                 email, username, first_name, last_name, password, **other_fields
             )
 
-        def create_user(
-            self, email, username, first_name, last_name, password, **other_fields
-        ):
+        def create_user(self, email, username, password, **other_fields):
             if not email:
                 raise ValueError("You must provide an email address")
             email = self.normalize_email(email=email)
             user = self.model(
                 email=email,
                 username=username,
-                first_name=first_name,
-                last_name=last_name,
                 **other_fields,
             )
             user.set_password(password)
@@ -55,6 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255, blank=True)
     start_date = models.DateTimeField(default=timezone.now)
     about = models.TextField(max_length=500, blank=True)
+    is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -68,6 +67,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self) -> str:
         return self.first_name
+
+    @property
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
 
     def __str__(self) -> str:
         return self.email

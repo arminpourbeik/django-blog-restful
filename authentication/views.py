@@ -14,7 +14,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.serializers import RegistrationSerializer
 from authentication.serializers import EmailVerificationSerializer
 from authentication.serializers import LoginSerializer
-
 from authentication.serializers import LogoutSerializer
 from authentication.models import User
 from authentication.utils import Util

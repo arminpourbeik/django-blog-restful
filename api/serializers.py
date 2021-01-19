@@ -42,6 +42,7 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     post = serializers.HyperlinkedRelatedField(read_only=True, view_name="post-detail")
+    author = serializers.ReadOnlyField(source="author.username")
 
     class Meta:
         model = Comment
@@ -51,6 +52,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
             "body",
             "created_at",
             "post",
+            "author",
         )
         extra_kwargs = {
             "created_at": {"read_only": True},

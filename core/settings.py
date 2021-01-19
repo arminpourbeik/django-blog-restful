@@ -31,7 +31,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # 3rd party
     "rest_framework",
+    "django_filters",
     "rest_framework_simplejwt.token_blacklist",
+    "crispy_forms",
     # Local
     "authentication",
     "blog",
@@ -131,6 +133,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

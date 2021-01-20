@@ -21,4 +21,9 @@ urlpatterns = [
         views.CreatePostCommentView.as_view(),
         name="create-comment",
     ),
+    path(
+        "posts/most_commented/<int:count>/",
+        views.GetMostCommentedPosts.as_view(),
+        name="most-commented-posts",
+    ),
 ]

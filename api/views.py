@@ -1,3 +1,4 @@
+from django.db.models import Count, manager
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -68,6 +69,27 @@ class CreatePostCommentView(generics.CreateAPIView):
     def perform_create(self, serializer):
         post_id = self.kwargs.get("pk")
         serializer.save(author=self.request.user, post_id=post_id)
+
+
+class GetMostCommentedPosts(generics.GenericAPIView):
+    """
+    View for getting most commented posts
+    """
+
+    renderer_classes = (BlogRenderers,)
+
+    def get(self, request, *args, **kwargs):
+        count = self.kwargs.get("count", 5)
+        most_commented_posts = Post.published.annotate(
+            total_comments=Count("comments")
+        ).order_by("-total_comments")[:count]
+
+        serializer = PostSerializer(
+            most_commented_posts, many=True, context={"request": request}
+        )
+        data = serializer.data
+
+        return Response({"posts": data})
 
 
 class ApiRoot(generics.GenericAPIView):

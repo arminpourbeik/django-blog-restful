@@ -6,6 +6,11 @@ urlpatterns = [
     path("", views.ApiRoot.as_view(), name="ApiRoot"),
     path("posts/", views.PostListView.as_view(), name="post-list"),
     path("posts/<int:pk>/", views.PostDetailView.as_view(), name="post-detail"),
+    path(
+        "posts/most_commented/<int:count>/",
+        views.GetMostCommentedPosts.as_view(),
+        name="most-commented-posts",
+    ),
     path("categories/", views.CategoryListView.as_view(), name="category-list"),
     path(
         "categories/<int:pk>/",
@@ -20,10 +25,5 @@ urlpatterns = [
         "posts/<int:pk>/comment/",
         views.CreatePostCommentView.as_view(),
         name="create-comment",
-    ),
-    path(
-        "posts/most_commented/<int:count>/",
-        views.GetMostCommentedPosts.as_view(),
-        name="most-commented-posts",
     ),
 ]

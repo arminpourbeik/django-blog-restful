@@ -38,7 +38,7 @@ class Post(models.Model):
     )
     content = models.TextField()
     slug = models.SlugField(max_length=255, unique_for_date="created_at")
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now, db_index=True)
     author = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
     )

@@ -43,6 +43,7 @@ class Post(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
     )
     status = models.CharField(max_length=10, choices=OPTIONS, default="published")
+    tags = models.ManyToManyField(to="Tag", related_name="posts", blank=True, null=True)
 
     objects = models.Manager()  # Default manager
     published = PostObjects()  # Custom manager
@@ -76,3 +77,10 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return "{} - by {}".format(self.body[:10], self.author.username)
+
+
+class Tag(models.Model):
+    title = models.CharField(max_length=255, unique=True)
+
+    def __str__(self) -> str:
+        return self.title

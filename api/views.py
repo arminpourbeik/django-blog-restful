@@ -1,4 +1,4 @@
-from django.db.models import Count, manager
+from django.db.models import Count
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse

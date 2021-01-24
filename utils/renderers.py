@@ -22,4 +22,5 @@ class BlogRenderers(renderers.JSONRenderer):
                     "statusCode": renderer_context.get("response").status_code,
                 }
             )
+
         return response

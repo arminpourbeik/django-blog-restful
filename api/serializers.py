@@ -1,6 +1,19 @@
+import pdb
 from rest_framework import serializers
 
-from blog.models import Post, Comment, Category
+from blog.models import Post, Comment, Category, Tag
+
+
+class PostTagsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ("title",)
+
+    def to_representation(self, instance):
+        return instance.title
+
+    def to_internal_value(self, data):
+        return self.Meta.model.objects.get_or_create(title=data)
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
@@ -8,6 +21,17 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(), slug_field="name"
     )
+    tags = PostTagsSerializer(many=True, required=False)
+
+    def create(self, validated_data):
+        tags = validated_data.pop("tags", None)
+
+        new_post = self.Meta.model.objects.create(**validated_data)
+        if tags:
+            for tag in tags:
+                tag[0].posts.add(new_post)
+
+        return new_post
 
     class Meta:
         model = Post
@@ -21,6 +45,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
             "status",
             "author",
             "category",
+            "tags",
             "num_of_comments",
         )
         extra_kwargs = {
@@ -37,7 +62,12 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Category
-        fields = ("pk", "url", "name", "posts")
+        fields = (
+            "pk",
+            "url",
+            "name",
+            "posts",
+        )
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):

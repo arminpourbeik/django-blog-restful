@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # 3rd party
     "rest_framework",
     "django_filters",
+    "imagekit",
     "rest_framework_simplejwt.token_blacklist",
     "crispy_forms",
     # Local
@@ -164,3 +165,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
+
+MEDIA_ROOT = BASE_DIR / "uploads"
+MEDIA_URL = "/uploads/"

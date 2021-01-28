@@ -1,6 +1,12 @@
+import os
+
+from imagekit.models import ImageSpecField
+from pilkit.processors import ResizeToFill
+
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.utils.timezone import now as timezone_now
 
 
 class Category(models.Model):
@@ -16,6 +22,14 @@ class Category(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+def upload_to(instance, filename):
+    now = timezone_now()
+    base, extention = os.path.splitext(filename)
+    extention = extention.lower()
+
+    return f"posts/{now:%Y/%m/%d}/{instance.pk}{extention}"
 
 
 class Post(models.Model):
@@ -43,7 +57,18 @@ class Post(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
     )
     status = models.CharField(max_length=10, choices=OPTIONS, default="published")
-    tags = models.ManyToManyField(to="Tag", related_name="posts", blank=True, null=True)
+    tags = models.ManyToManyField(to="Tag", related_name="posts", blank=True)
+    header_picture = models.ImageField(upload_to=upload_to, blank=True, null=True)
+    picture_large = ImageSpecField(
+        source="header_picture",
+        processors=[ResizeToFill(800, 400)],
+        format="PNG",
+    )
+    picture_thumbnail = ImageSpecField(
+        source="header_picture",
+        processors=[ResizeToFill(728, 250)],
+        format="PNG",
+    )
 
     objects = models.Manager()  # Default manager
     published = PostObjects()  # Custom manager

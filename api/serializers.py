@@ -46,6 +46,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
             "category",
             "tags",
             "num_of_comments",
+            "header_picture",
         )
         extra_kwargs = {
             "created_at": {"read_only": True},

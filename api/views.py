@@ -3,6 +3,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import permissions
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from blog.models import Category, Post, Comment
 from api.custompermissions import IsCurrentUserAuthorOrReadOnly
@@ -18,6 +19,7 @@ class PostListView(generics.ListCreateAPIView):
     filter_class = PostFilter
     ordering_fields = ("created_at",)
     renderer_classes = (BlogRenderers,)
+    parser_classes = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
